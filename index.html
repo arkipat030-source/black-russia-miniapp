@@ -1,32 +1,238 @@
-function submitForm() {
-    const nickname = document.getElementById('nickname').value;
-    const serverElement = document.getElementById('server');
-    const serverText = serverElement.options[serverElement.selectedIndex].text;
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Black Russia Recovery</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        /* Общие стили в стиле Black Russia */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: radial-gradient(circle at center, #140202 0%, #050000 100%);
+            color: #ffffff;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
 
-    if(!nickname) {
-        alert("Пожалуйста, введите ваш никнейм!");
-        return;
-    }
+        /* Неоновое свечение по углам */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50px; left: -50px; width: 200px; height: 200px;
+            background: rgba(255, 0, 0, 0.15);
+            filter: blur(80px);
+            border-radius: 50%;
+        }
+        body::after {
+            content: '';
+            position: absolute;
+            bottom: -50px; right: -50px; width: 200px; height: 200px;
+            background: rgba(255, 0, 0, 0.15);
+            filter: blur(80px);
+            border-radius: 50%;
+        }
 
-    // Собираем данные в объект
-    const dataToSend = {
-        nickname: nickname,
-        server: serverText
-    };
+        .container {
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            z-index: 10;
+        }
 
-    // ОТПРАВКА ДАННЫХ В БОТА (Важная строка!)
-    tg.sendData(JSON.stringify(dataToSend));
+        /* Шапка */
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            color: #ff0000;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 2px;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+        }
+        .subtitle {
+            font-size: 13px;
+            color: #a182ff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 25px;
+            text-shadow: 0 0 8px rgba(161, 130, 255, 0.3);
+        }
 
-    // Переключение на экран с пульсирующей зеленой галочкой
-    const card = document.getElementById('recoveryCard');
-    const success = document.getElementById('successScreen');
+        /* Форма / Карточка */
+        .card {
+            background: #0d0d0d;
+            border: 1px solid rgba(161, 130, 255, 0.2);
+            box-shadow: 0 0 15px rgba(161, 130, 255, 0.05);
+            border-radius: 16px;
+            padding: 24px;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
 
-    card.style.opacity = '0';
-    setTimeout(() => {
-        card.style.display = 'none';
-        success.style.display = 'block';
-        setTimeout(() => {
-            success.style.opacity = '1';
-        }, 50);
-    }, 500);
-}
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        /* Поля ввода */
+        input, select {
+            width: 100%;
+            padding: 14px;
+            box-sizing: border-box;
+            background: #000000;
+            border: 1px solid #222;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: #ff0000;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
+        }
+
+        input::placeholder {
+            color: #444;
+        }
+
+        /* Кнопка Далее */
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #ff0000 0%, #550000 100%);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 16px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        /* Экран успеха (скрыт по умолчанию) */
+        .success-screen {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Анимация пульсации галочки */
+        .checkmark {
+            font-size: 70px;
+            color: #00ff66;
+            text-shadow: 0 0 20px rgba(0, 255, 102, 0.6);
+            margin-bottom: 15px;
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.15); opacity: 1; text-shadow: 0 0 30px rgba(0, 255, 102, 0.9); }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        .success-text {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .success-sub {
+            font-size: 14px;
+            color: #aaa;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="logo">Black Russia</div>
+        <div class="subtitle">Панель восстановления аккаунтов</div>
+
+        <div class="card" id="recoveryCard">
+            <div class="form-group">
+                <label>Ваш никнейм (Имя_Фамилия)</label>
+                <input type="text" id="nickname" placeholder="Ivan_Ivanov" required>
+            </div>
+
+            <div class="form-group">
+                <label>Выберите сервер</label>
+                <select id="server">
+                    <option value="1">1. Red</option>
+                    <option value="2">2. Green</option>
+                    <option value="3">3. Blue</option>
+                    <option value="91">91. Astana</option>
+                </select>
+            </div>
+
+            <button class="btn-submit" onclick="submitForm()">ДАЛЕЕ</button>
+        </div>
+
+        <div class="success-screen" id="successScreen">
+            <div class="checkmark">✔</div>
+            <div class="success-text">Заявка отправлена!</div>
+            <div class="success-sub">Система изменит вам пароль в течение нескольких минут.</div>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Открываем Mini App сразу во весь экран
+
+        function submitForm() {
+            const nickname = document.getElementById('nickname').value;
+            const serverElement = document.getElementById('server');
+            const serverText = serverElement.options[serverElement.selectedIndex].text;
+
+            if(!nickname) {
+                alert("Пожалуйста, введите ваш никнейм!");
+                return;
+            }
+
+            // Формируем данные для отправки в бота
+            const dataToSend = {
+                nickname: nickname,
+                server: serverText
+            };
+
+            // Отправляем данные обратно в твой bot.py
+            tg.sendData(JSON.stringify(dataToSend));
+
+            // Плавное переключение экранов
+            const card = document.getElementById('recoveryCard');
+            const success = document.getElementById('successScreen');
+
+            card.style.opacity = '0';
+            setTimeout(() => {
+                card.style.display = 'none';
+                success.style.display = 'block';
+                setTimeout(() => {
+                    success.style.opacity = '1';
+                }, 50);
+            }, 500);
+        }
+    </script>
+</body>
+</html>
