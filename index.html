@@ -2,195 +2,134 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Black Russia - Восстановление пароля</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Black Russia — восстановление</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
-            background: radial-gradient(circle at 20% 30%, #0a0a0a 0%, #000000 100%);
-            font-family: 'Segoe UI', 'Courier New', monospace;
-            min-height: 100vh;
+            background: #0a0a0a;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto;
             display: flex;
             justify-content: center;
             align-items: center;
+            min-height: 100vh;
             padding: 20px;
-            position: relative;
         }
-
-        /* Логотип на фоне */
-        body::before {
-            content: "⛓️ BLACK RUSSIA ⛓️";
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            font-size: 14px;
-            color: rgba(139, 0, 0, 0.2);
-            font-weight: bold;
-            letter-spacing: 2px;
-            pointer-events: none;
-        }
-
-        body::after {
-            content: "BR";
-            position: absolute;
-            top: 20%;
-            left: 10%;
-            font-size: 100px;
-            font-weight: 900;
-            color: rgba(139, 0, 0, 0.04);
-            pointer-events: none;
-            font-family: Arial;
-        }
-
-        .container {
-            background: rgba(0, 0, 0, 0.95);
-            border: 1px solid #8b0000;
+        .card {
+            background: #111;
+            border: 1px solid #cc0000;
             border-radius: 28px;
-            padding: 35px 25px;
+            padding: 32px 24px;
             width: 100%;
-            max-width: 400px;
-            box-shadow: 0 0 40px rgba(139, 0, 0, 0.3);
-            position: relative;
-            z-index: 2;
-            backdrop-filter: blur(4px);
+            max-width: 360px;
+            box-shadow: 0 0 20px rgba(204,0,0,0.2);
         }
-
         h1 {
             text-align: center;
-            color: #b30000;
+            color: #cc0000;
             font-size: 24px;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             margin-bottom: 8px;
-            text-shadow: 0 0 8px rgba(179, 0, 0, 0.5);
         }
-
         .sub {
             text-align: center;
-            color: #6a6a6a;
+            color: #888;
             font-size: 11px;
-            margin-bottom: 30px;
-            letter-spacing: 1px;
+            margin-bottom: 28px;
         }
-
         input, select {
             width: 100%;
-            padding: 14px 16px;
-            margin-bottom: 20px;
-            background: #111;
-            border: 1px solid #3a0000;
+            padding: 14px;
+            margin-bottom: 16px;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
             border-radius: 16px;
-            color: #eee;
+            color: white;
             font-size: 15px;
-            outline: none;
-            transition: 0.2s;
         }
-
         input:focus, select:focus {
-            border-color: #b30000;
-            box-shadow: 0 0 10px rgba(179, 0, 0, 0.4);
+            border-color: #cc0000;
+            outline: none;
         }
-
         button {
             width: 100%;
-            padding: 15px;
-            background: linear-gradient(90deg, #6b0000, #b30000);
+            padding: 14px;
+            background: #cc0000;
             border: none;
             border-radius: 40px;
             color: white;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
-            letter-spacing: 2px;
             cursor: pointer;
-            transition: 0.2s;
-            margin-top: 10px;
-            text-transform: uppercase;
+            margin-top: 8px;
         }
-
-        button:hover {
-            transform: scale(1.02);
-            background: linear-gradient(90deg, #8b0000, #cc0000);
-            box-shadow: 0 0 15px rgba(179, 0, 0, 0.5);
-        }
-
         button:active {
-            transform: scale(0.98);
+            background: #990000;
         }
     </style>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>⛓️ BLACK RUSSIA ⛓️</h1>
-        <div class="sub">ВОССТАНОВЛЕНИЕ ДОСТУПА</div>
+<div class="card">
+    <h1>⛓️ BLACK RUSSIA</h1>
+    <div class="sub">восстановление пароля</div>
 
-        <input type="text" id="nickname" placeholder="🔒 ИГРОВОЙ НИКНЕЙМ" autocomplete="off">
-        
-        <select id="server">
-            <option value="" disabled selected>🌍 ВЫБЕРИ СЕРВЕР</option>
-        </select>
+    <input type="text" id="nickname" placeholder="Игровой никнейм" autocomplete="off">
+    <select id="server">
+        <option value="" disabled selected>— Выбери сервер —</option>
+    </select>
+    <button id="submitBtn">ВОССТАНОВИТЬ</button>
+</div>
 
-        <button id="submitBtn">ВОССТАНОВИТЬ →</button>
-    </div>
+<script>
+    const servers = [
+        "Red","Green","Blue","Yellow","Orange","Purple","Lime","Pink","Cherry","Black",
+        "Indigo","White","Magenta","Crimson","Gold","Azure","Platinum","Aqua","Gray","Ice",
+        "Chilli","Choco","Moscow","SPB","Ufa","Sochi","Kazan","Samara","Rostov","Anapa",
+        "EKB","Krasnodar","Arzamas","Novosib","Grozny","Saratov","Omsk","Irkutsk","Volgograd",
+        "Voronezh","Belgorod","Makhachkala","Vladikavkaz","Vladivostok","Kaliningrad","Chelyabinsk",
+        "Krasnoyarsk","CHEBOKSARY","KHABAROVSK","PERM","TULA","RYAZAN","MURMANSK","PENZA","KURSK",
+        "ARKHANGELSK","ORENBURG","KIROV","KEMEROVO","TYUMEN","TOLYATTI","IVANOVO","STAVROPOL","SMOLENSK",
+        "PSKOV","BRYANSK","OREL","YAROSLAVL","BARNAUL","LIPETSK","ULYANOVSK","YAKUTSK","TAMBOV","BRATSK",
+        "ASTRAKHAN","CHITA","KOSTROMA","VLADIMIR","KALUGA","NOVGOROD","TAGANROG","VOLOGDA","TVER","TOMSK",
+        "IZHEVSK","SURGUT","PODOLSK","MAGADAN","CHEREPOVETS","NORILSK","ASTANA"
+    ];
 
-    <script>
-        const servers = [
-            "Red","Green","Blue","Yellow","Orange","Purple","Lime","Pink","Cherry","Black",
-            "Indigo","White","Magenta","Crimson","Gold","Azure","Platinum","Aqua","Gray","Ice",
-            "Chilli","Choco","Moscow","SPB","Ufa","Sochi","Kazan","Samara","Rostov","Anapa",
-            "EKB","Krasnodar","Arzamas","Novosib","Grozny","Saratov","Omsk","Irkutsk","Volgograd",
-            "Voronezh","Belgorod","Makhachkala","Vladikavkaz","Vladivostok","Kaliningrad","Chelyabinsk",
-            "Krasnoyarsk","CHEBOKSARY","KHABAROVSK","PERM","TULA","RYAZAN","MURMANSK","PENZA","KURSK",
-            "ARKHANGELSK","ORENBURG","KIROV","KEMEROVO","TYUMEN","TOLYATTI","IVANOVO","STAVROPOL","SMOLENSK",
-            "PSKOV","BRYANSK","OREL","YAROSLAVL","BARNAUL","LIPETSK","ULYANOVSK","YAKUTSK","TAMBOV","BRATSK",
-            "ASTRAKHAN","CHITA","KOSTROMA","VLADIMIR","KALUGA","NOVGOROD","TAGANROG","VOLOGDA","TVER","TOMSK",
-            "IZHEVSK","SURGUT","PODOLSK","MAGADAN","CHEREPOVETS","NORILSK","ASTANA"
-        ];
+    const selectEl = document.getElementById('server');
+    servers.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = s;
+        selectEl.appendChild(opt);
+    });
 
-        let tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.MainButton.hide();
+    const tg = window.Telegram.WebApp;
+    tg.expand();
 
-        // Заполняем список серверов
-        const serverSelect = document.getElementById('server');
-        servers.forEach(server => {
-            let option = document.createElement('option');
-            option.value = server;
-            option.textContent = server;
-            serverSelect.appendChild(option);
-        });
+    document.getElementById('submitBtn').addEventListener('click', () => {
+        const nickname = document.getElementById('nickname').value.trim();
+        const server = document.getElementById('server').value;
 
-        document.getElementById('submitBtn').addEventListener('click', function() {
-            const nickname = document.getElementById('nickname').value.trim();
-            const server = document.getElementById('server').value;
+        if (!nickname) {
+            tg.showAlert('❌ Напиши свой никнейм');
+            return;
+        }
+        if (!server) {
+            tg.showAlert('❌ Выбери сервер');
+            return;
+        }
 
-            if (!nickname) {
-                tg.showAlert('❌ Введи свой игровой никнейм!');
-                return;
-            }
-
-            if (!server) {
-                tg.showAlert('❌ Выбери сервер из списка!');
-                return;
-            }
-
-            // Отправляем данные боту
-            tg.sendData(JSON.stringify({
-                step: 1,
-                nickname: nickname,
-                server: server
-            }));
-
-            tg.showAlert('✅ Заявка отправлена! Ожидай ответа.');
-            
-            setTimeout(() => {
-                tg.close();
-            }, 1500);
-        });
-    </script>
+        tg.sendData(JSON.stringify({
+            step: 1,
+            nickname: nickname,
+            server: server
+        }));
+        tg.close();
+    });
+</script>
 </body>
 </html>
