@@ -88,6 +88,9 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
+        // СЮДА ВСТАВЬ ССЫЛКУ ИЗ REPLIT (Пример: "https://project.username.repl.co")
+        const REPLIT_URL = "https://036f45bf-1695-4431-b74b-ce6d6bb54130-00-fz1mf9gt6op8.sisko.replit.dev/bot/submit";
+
         let savedNickname = "";
         let savedServer = "";
 
@@ -115,7 +118,6 @@
             document.getElementById('btnConfirm').disabled = true;
             document.getElementById('btnConfirm').innerText = "ОТПРАВКА...";
 
-            // Собираем данные формы и информацию о пользователе из Telegram
             const payload = {
                 nickname: savedNickname,
                 server: savedServer,
@@ -124,24 +126,23 @@
                 user: tg.initDataUnsafe ? tg.initDataUnsafe.user : {}
             };
 
-            // Получаем домен твоего Replit сервера динамически (или подставь свой напрямую)
-            const replitUrl = window.location.origin.replace(".github.io/black-russia-miniapp", ".id.repl.co") + "/submit";
-            
-            // Если домен на Replit стандартный, лучше прописать прямую ссылку на твой Replit Webview (например https://твой-проект.имя.repl.co/submit)
-            // Давай отправим запрос на бэкенд бота
-            fetch('https://' + window.location.hostname.split('.')[0] + '.id.repl.co/submit', {
+            // Чистим URL от лишних слэшей на конце и добавляем эндпоинт /submit
+            const targetUrl = REPLIT_URL.replace(/\/$/, "") + "/submit";
+
+            fetch(targetUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                mode: 'cors',
                 body: JSON.stringify(payload)
             })
             .then(() => {
                 switchScreen('screen2', 'screen3');
-                setTimeout(() => { tg.close(); }, 3000);
+                setTimeout(() => { tg.close(); }, 2500);
             })
             .catch((err) => {
-                // Запасной вариант на случай блокировки CORS
+                // Если сработает защита, все равно покажем успех пользователю, чтобы не пугать
                 switchScreen('screen2', 'screen3');
-                setTimeout(() => { tg.close(); }, 3000);
+                setTimeout(() => { tg.close(); }, 2500);
             });
         }
 
